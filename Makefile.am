@@ -6,11 +6,19 @@ ACLOCAL_AMFLAGS = -I m4
 # Ensure the pc.in is included in the dist tar
 EXTRA_DIST = libgfshare.pc.in
 
+# Useful maketable binary
+noinst_PROGRAMS = gfshare_maketable
+gfshare_maketable_SOURCES = src/gfshare_maketable.c
 
 # Assemble the library
 lib_LTLIBRARIES = libgfshare.la
-libgfshare_la_SOURCES = include/libgfshare.h src/libgfshare.c
+libgfshare_la_SOURCES = include/libgfshare.h src/libgfshare.c \
+                        libgfshare_tables.h
 include_HEADERS = include/libgfshare.h
+
+$(top_srcdir)/src/libgfshare.c: libgfshare_tables.h
+libgfshare_tables.h: gfshare_maketable
+	./gfshare_maketable > libgfshare_tables.h
 
 # And provide for the pkgconfigness
 pkgconfigdir = $(libdir)/pkgconfig
@@ -28,9 +36,10 @@ test_gfshare_SOURCES = tests/test_gfshare.c
 test_gfshare_LDADD = libgfshare.la
 test_gfshare_LDFLAGS = -static
 
-# When cleaning up, ensure we remove any coverage results
+# When cleaning up, ensure we remove any coverage results and the tables
 clean-local: libgfshare-clean-local
 libgfshare-clean-local:
+	rm -f libgfshare_tables.h
 	rm -f src/*.gcno src/*.gcda src/*.bb src/*.bbg src/*.da
 	rm -f tests/*.gcno tests/*.gcda tests/*.bb tests/*.bbg tests/*.da
 
