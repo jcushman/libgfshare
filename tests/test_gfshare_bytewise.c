@@ -22,7 +22,7 @@ check_at_threshold(unsigned char secret,
   unsigned int i, p = 1;
   int ok = 1;
   
-  bytewise_split(secret, threshold, count, shares, sharenrs);
+  gfshare_ll_bytewise_split(secret, threshold, count, shares, sharenrs);
   for( i = 0; i < threshold; ++i )
     recombnrs[i] = i;
   
@@ -31,7 +31,7 @@ check_at_threshold(unsigned char secret,
       recombshr[i] = shares[recombnrs[i]];
       recombshn[i] = sharenrs[recombnrs[i]];
     }
-    i = bytewise_combine(threshold, recombshr, recombshn);
+    i = gfshare_ll_bytewise_combine(threshold, recombshr, recombshn);
     if( i != secret ) {
       fprintf(stdout, "\nBAD: Secret 0x%02x. Threshold %d. Count %d. Recombination 0x%02x\n", secret, threshold, count, i);
       for( i = 0; i < threshold; ++i ) 

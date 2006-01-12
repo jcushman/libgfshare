@@ -10,11 +10,11 @@
 #include <stdlib.h>
 
 void 
-bytewise_split(unsigned char secret,
-               unsigned char threshold,
-               unsigned char sharecount,
-               unsigned char* shares,
-               unsigned char* sharenrs)
+gfshare_ll_bytewise_split(unsigned char secret,
+                          unsigned char threshold,
+                          unsigned char sharecount,
+                          unsigned char* shares,
+                          unsigned char* sharenrs)
 {
   unsigned char *coefficients = alloca(threshold);
   unsigned int i, j, ilog;
@@ -36,9 +36,10 @@ bytewise_split(unsigned char secret,
 }
 
 unsigned char 
-bytewise_combine(unsigned char sharecount, /* threshold shares please */
-                 unsigned char* shares,
-                 unsigned char* sharenrs)
+gfshare_ll_bytewise_combine(unsigned char sharecount, /* == threshold */
+                            /* exactly threshold shares please */
+                            unsigned char* shares,
+                            unsigned char* sharenrs)
 {
   unsigned char result = 0;
   unsigned int i, j;
