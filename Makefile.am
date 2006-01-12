@@ -14,6 +14,7 @@ gfshare_maketable_SOURCES = src/gfshare_maketable.c
 lib_LTLIBRARIES = libgfshare.la
 libgfshare_la_SOURCES = include/libgfshare.h src/libgfshare.c \
                         libgfshare_tables.h
+libgfshare_la_LDFLAGS = -version-info @LTLIBVER@
 include_HEADERS = include/libgfshare.h
 
 $(top_srcdir)/src/libgfshare.c: libgfshare_tables.h
