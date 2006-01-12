@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <alloca.h>
 
-#define MAXCOUNT 10
+#define MAXCOUNT 11
 
 int
 check_at_threshold(unsigned char secret,
@@ -94,9 +94,13 @@ main(int argc, char **argv)
 {
   unsigned int secret, count;
   unsigned ok = 1;
+  static char* throbber = "-/|\\";
+  int throb = -1;
+  
+  fprintf(stdout, "test_gfshare_bytewise: ");
   
   for( secret = 0; secret < 256; ++secret ) {
-    fprintf(stdout, ".");
+    fprintf(stdout, "%c\b", throbber[++throb % 4]);
     fflush(stdout);
     for( count = 3; count < MAXCOUNT - 1; ++count ) {
       fflush(stdout);
@@ -104,16 +108,6 @@ main(int argc, char **argv)
     }
   }
   
-  /*
-  for( i = 0; i < 256; ++i ) {
-    fprintf(stdout, "Secret: %02x :: ", i);
-    bytewise_split(i, 3, 8, shares, sharenrs);
-    for( j = 0; j < 8; ++j )
-      fprintf(stdout, "%02x ", shares[j]);
-    j = bytewise_combine(3, shares, sharenrs);
-    fprintf(stdout, ":: %02x\n", j);
-    if( i != j ) ok = 0;
-  }
-  */
+  fprintf(stdout,"OK\n");
   return !ok;
 }

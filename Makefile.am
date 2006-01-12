@@ -28,13 +28,13 @@ pkgconfig_DATA = libgfshare.pc
 AM_CFLAGS = -I$(srcdir)/include
 
 # Ensure our tests get run...
-TESTS = test_gfshare
+TESTS = test_gfshare_bytewise
 
 check_PROGRAMS = $(TESTS)
 
-test_gfshare_SOURCES = tests/test_gfshare.c
-test_gfshare_LDADD = libgfshare.la
-test_gfshare_LDFLAGS = -static
+test_gfshare_bytewise_SOURCES = tests/test_gfshare_bytewise.c
+test_gfshare_bytewise_LDADD = libgfshare.la
+test_gfshare_bytewise_LDFLAGS = -static
 
 # When cleaning up, ensure we remove any coverage results and the tables
 clean-local: libgfshare-clean-local
