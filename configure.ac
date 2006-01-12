@@ -1,0 +1,34 @@
+# Copyright (c) Daniel Silverstone <dsilvers@digital-scurf.org> 2006
+
+
+AC_PREREQ(2.57)
+AC_INIT(libgfshare, [0.0.1], [dsilvers@digital-scurf.org])
+
+dnl AC_CONFIG_MACRO_DIR(m4)
+
+AC_CONFIG_SRCDIR([include/libgfshare.h])
+
+AM_INIT_AUTOMAKE([1.8 foreign dist-bzip2 subdir-objects])
+AM_MAINTAINER_MODE
+
+AC_PROG_CPP
+AC_PROG_CC
+AC_PROG_CXX
+AM_PROG_CC_C_O
+AM_PROG_INSTALL
+AM_PROG_LN_S
+AM_PROG_MAKE_SET
+AM_PROG_RANLIB
+AC_PROG_LIBTOOL
+
+COMPILER_COVERAGE
+LINKER_OPTIMISATION
+COMPILER_WARNINGS
+COMPILER_OPTIMISATIONS
+
+
+AC_CONFIG_FILES([Makefile libgfshare.pc])
+
+AC_CONFIG_HEADERS([config.h])
+
+AC_OUTPUT
