@@ -1,0 +1,10 @@
+./BUILD
+./Makefile.in
+./compile
+./config.guess
+./configure
+./configure.cache
+./depcomp
+./install-sh
+./ltmain.sh
+./missing
