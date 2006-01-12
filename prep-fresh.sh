@@ -12,6 +12,6 @@ cd BUILD && ../configure --enable-maintainer-mode \
     --cache-file=../configure.cache \
     --enable-dependency-tracking \
     --disable-fast-install \
-    --enable-debugging-mode \
+    --disable-compiler-optimisations \
     --enable-compiler-coverage \
     --enable-linker-optimisations
