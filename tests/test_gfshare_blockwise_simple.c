@@ -43,5 +43,28 @@ main( int argc, char **argv )
   for( i = 0; i < 512; ++i )
     if( secret[i] != recomb[i] ) 
       ok = 0;
+  /* Stage 4, attempt a recombination with shares 1 and 3 */
+  sharenrs[2] = '2';
+  sharenrs[1] = 0;
+  gfshare_ctx_dec_newshares( G, sharenrs );
+  gfshare_ctx_dec_extract( G, recomb );
+  for( i = 0; i < 512; ++i )
+    if( secret[i] != recomb[i] ) 
+      ok = 0;
+  /* Stage 5, attempt a recombination with shares 2 and 3 */
+  sharenrs[0] = 0;
+  sharenrs[1] = '1';
+  gfshare_ctx_dec_newshares( G, sharenrs );
+  gfshare_ctx_dec_extract( G, recomb );
+  for( i = 0; i < 512; ++i )
+    if( secret[i] != recomb[i] ) 
+      ok = 0;
+  /* Stage 6, attempt a recombination with shares 1, 2 and 3 */
+  sharenrs[0] = '0';
+  gfshare_ctx_dec_newshares( G, sharenrs );
+  gfshare_ctx_dec_extract( G, recomb );
+  for( i = 0; i < 512; ++i )
+    if( secret[i] != recomb[i] ) 
+      ok = 0;
   return ok!=1;
 }
