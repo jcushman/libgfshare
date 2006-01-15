@@ -28,6 +28,16 @@ pkgconfig_DATA = libgfshare.pc
 # Ensure the C files can find the headers
 AM_CFLAGS = -I$(srcdir)/include
 
+# Our programs come next...
+
+bin_PROGRAMS = gfsplit gfcombine
+
+gfsplit_SOURCES = tools/gfsplit.c
+gfsplit_LDADD = libgfshare.la
+
+gfcombine_SOURCES = tools/gfcombine.c
+gfcombine_LDADD = libgfshare.la
+
 # Ensure our tests get run...
 TESTS = test_gfshare_bytewise test_gfshare_blockwise_simple
 

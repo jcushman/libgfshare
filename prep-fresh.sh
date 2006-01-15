@@ -14,4 +14,5 @@ cd BUILD && ../configure --enable-maintainer-mode \
     --disable-fast-install \
     --disable-compiler-optimisations \
     --enable-compiler-coverage \
+    --disable-shared \
     --enable-linker-optimisations
