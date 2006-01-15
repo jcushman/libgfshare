@@ -1,0 +1,31 @@
+Library for Shamir Secret Sharing in the Galois Field 2**8
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This library implements what is known as Shamir Secret Sharing. This
+entails encoding a secret as an integer and then constructing a
+polynomial whose coefficients are random and calculating coordinate
+pairs along the resultant curve. These coordinate pairs are considered
+'shares' and by controlling the order of the polynomial we can control
+the number of shares required to be able to recover the secret.
+
+In this manner we can split a secret into any 'C' shares, any 'T' of
+which can be used to recover the secret.
+
+This would be useful, for example, in looking after GPG secret keys
+used rarely, but whose security is paramount. For example a key used
+to sign the key which signs the Debian or Ubuntu package archives.
+
+If you wish to know more about how the secret sharing works and why it
+is safe, then there exist many articles on the mathematics behind it.
+
+This particular implementation was very heavily inspired by the work
+of Mark D. Wooding (mdw) in his catacomb library. Thanks go to Mark
+for offering to share this implementation with me.
+
+Using the library is very easy. The tests and sample tools are very
+straightforward and the header file tells you what each function is
+used for.
+
+ -- Daniel Silverstone. 2006-01-15
+
+

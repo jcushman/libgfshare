@@ -4,7 +4,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 # Ensure the pc.in is included in the dist tar
-EXTRA_DIST = libgfshare.pc.in
+EXTRA_DIST = libgfshare.pc.in README COPYRIGHT
 
 # Useful maketable binary
 noinst_PROGRAMS = gfshare_maketable
