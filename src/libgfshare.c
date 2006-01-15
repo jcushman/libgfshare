@@ -6,7 +6,6 @@
 #include "libgfshare.h"
 #include "libgfshare_tables.h"
 
-#include <alloca.h>
 #include <stdlib.h>
 #include <string.h>
 
