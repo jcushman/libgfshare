@@ -39,22 +39,20 @@ gfcombine_SOURCES = tools/gfcombine.c
 gfcombine_LDADD = libgfshare.la
 
 # Ensure our tests get run...
-TESTS = test_gfshare_bytewise test_gfshare_blockwise_simple
+TESTS = test_gfshare_blockwise_simple
 
 check_PROGRAMS = $(TESTS)
-
-test_gfshare_bytewise_SOURCES = tests/test_gfshare_bytewise.c
-test_gfshare_bytewise_LDADD = libgfshare.la
-test_gfshare_bytewise_LDFLAGS = -static
 
 test_gfshare_blockwise_simple_SOURCES = tests/test_gfshare_blockwise_simple.c
 test_gfshare_blockwise_simple_LDADD = libgfshare.la
 test_gfshare_blockwise_simple_LDFLAGS = -static
 
 # When cleaning up, ensure we remove any coverage results and the tables
-clean-local: libgfshare-clean-local
+clean-local: libgfshare-clean-local libgfshare-clean-local-coverage
 libgfshare-clean-local:
 	rm -f libgfshare_tables.h
+
+libgfshare-clean-local-coverage:
 	rm -f src/*.gcno src/*.gcda src/*.bb src/*.bbg src/*.da
 	rm -f tests/*.gcno tests/*.gcda tests/*.bb tests/*.bbg tests/*.da
 
