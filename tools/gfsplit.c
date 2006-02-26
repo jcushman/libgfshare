@@ -26,7 +26,7 @@ void
 usage(FILE* stream)
 {
   fprintf( stream, "\
-Usage: %s [-n sharecount] [-t threshold] inputfile [outputstem]\n\
+Usage: %s [-n threshold] [-m sharecount] inputfile [outputstem]\n\
   where sharecount is the number of shares to build.\n\
   where threshold is the number of shares needed to recombine.\n\
   where inputfile is the file to split.\n\
@@ -119,7 +119,7 @@ do_gfsplit( unsigned int sharecount,
   return 0;
 }
 
-#define OPTSTRING "n:t:hv"
+#define OPTSTRING "n:m:hv"
 int
 main( int argc, char **argv )
 {
@@ -151,7 +151,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
       usage( stdout );
       return 0;
       break;
-    case 'n':
+    case 'm':
       sharecount = strtoul( optarg, &endptr, 10 );
       if( *endptr != 0 || *optarg == 0 || 
           sharecount < 3 || sharecount > 255 ) {
@@ -160,7 +160,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
         return 1;
       }
       break;
-    case 't':
+    case 'n':
       threshold = strtoul( optarg, &endptr, 10 );
       if( *endptr != 0 || *optarg == 0 || 
           threshold < 2 || threshold > sharecount) {
