@@ -39,9 +39,10 @@ gfcombine_SOURCES = tools/gfcombine.c
 gfcombine_LDADD = libgfshare.la
 
 # Ensure our tests get run...
-TESTS = test_gfshare_blockwise_simple
+C_TESTS = test_gfshare_blockwise_simple
+TESTS = $(C_TESTS) tests/test_gfsplit_gfcombine.sh
 
-check_PROGRAMS = $(TESTS)
+check_PROGRAMS = $(C_TESTS)
 
 test_gfshare_blockwise_simple_SOURCES = tests/test_gfshare_blockwise_simple.c
 test_gfshare_blockwise_simple_LDADD = libgfshare.la
