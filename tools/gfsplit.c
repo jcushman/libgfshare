@@ -106,6 +106,7 @@ do_gfsplit( unsigned int sharecount,
       bytes_written = fwrite( buffer, 1, bytes_read, outputfiles[i] );
       if( bytes_read != bytes_written ) {
         perror(outputfilenames[i]);
+        gfshare_ctx_free( G );
         return 1;
       }
     }

@@ -39,6 +39,7 @@ struct _gfshare_ctx {
   unsigned int size;
   unsigned char* sharenrs;
   unsigned char* buffer;
+  unsigned int buffersize;
 };
 
 static void
@@ -70,7 +71,8 @@ gfshare_ctx_init_enc( unsigned char* sharenrs,
   ctx->size = size;
   ctx->sharenrs = XMALLOC( sharecount );
   memcpy( ctx->sharenrs, sharenrs, sharecount );
-  ctx->buffer = XMALLOC( threshold * size );
+  ctx->buffersize = threshold * size;
+  ctx->buffer = XMALLOC( ctx->buffersize );
   return ctx;
 }
 
@@ -86,16 +88,21 @@ gfshare_ctx_init_dec( unsigned char* sharenrs,
   ctx->size = size;
   ctx->sharenrs = XMALLOC( sharecount );
   memcpy( ctx->sharenrs, sharenrs, sharecount );
-  ctx->buffer = XMALLOC( (ctx->size * ctx->sharecount) );
+  ctx->buffersize = ctx->size * ctx->sharecount;
+  ctx->buffer = XMALLOC( ctx->buffersize );
   return ctx;
 }
 
-/* Free a share context's memory. (does not free the ctx itself) */
+/* Free a share context's memory. */
 void 
 gfshare_ctx_free( gfshare_ctx* ctx )
 {
+  gfshare_fill_rand( ctx->buffer, ctx->buffersize );
+  gfshare_fill_rand( ctx->sharenrs, ctx->sharecount );
+  XFREE( ctx->sharenrs );
   XFREE( ctx->buffer );
-  ctx->buffer = 0; /* Set buffer to zero in case we're called again */
+  gfshare_fill_rand( (unsigned char*)ctx, sizeof(struct _gfshare_ctx) );
+  XFREE( ctx );
 }
 
 /* --------------------------------------------------------[ Splitting ]---- */

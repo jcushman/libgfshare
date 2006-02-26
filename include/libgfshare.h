@@ -51,7 +51,7 @@ gfshare_ctx* gfshare_ctx_init_dec(unsigned char* /* sharenrs */,
                                   unsigned int /* sharecount */,
                                   unsigned int /* size */);
 
-/* Free a share context's memory. (does not free the ctx itself) */
+/* Free a share context's memory. */
 void gfshare_ctx_free(gfshare_ctx* /* ctx */);
 
 /* --------------------------------------------------------[ Splitting ]---- */

@@ -87,5 +87,6 @@ main( int argc, char **argv )
   for( i = 0; i < 512; ++i )
     if( secret[i] != recomb[i] ) 
       ok = 0;
+  gfshare_ctx_free( G );
   return ok!=1;
 }
