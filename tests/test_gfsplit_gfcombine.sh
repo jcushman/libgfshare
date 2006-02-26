@@ -13,7 +13,7 @@ cleanup ()
 trap cleanup 0
 
 cp ../libtool plaintext
-../gfsplit -n 5 -t 3 plaintext cyphertext
+../gfsplit -n 3 -m 5 plaintext cyphertext
 
 SHARES=$(ls cyphertext.* | wc -l)
 
