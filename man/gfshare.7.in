@@ -1,0 +1,17 @@
+.\" This is the makefile for gfsplit
+.TH GFSHARE "7" "February 2006" "@PACKAGE_VERSION@" "Shamir Secret Sharing in gf(2**8)"
+.SH NAME
+gfshare - explanation of Shamir Secret Sharing in gf(2**8)
+.SH DESCRIPTION
+Please write this section
+.SH AUTHOR
+Written by Daniel Silverstone.
+.SH "REPORTING BUGS"
+Report bugs against the libgfshare product on www.launchpad.net.
+.SH COPYRIGHT
+libgfshare is copyright \(co 2006 Daniel Silverstone.
+.br
+This is free software. You may redistribute copies of it under the terms of the MIT licence (the COPYRIGHT file in the source distribution).
+There is NO WARRANTY, to the extent permitted by law.
+.SH "SEE ALSO"
+gfsplit(1), gfcombine(1), libgfshare(3)

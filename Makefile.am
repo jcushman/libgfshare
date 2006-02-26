@@ -38,6 +38,10 @@ gfsplit_LDADD = libgfshare.la
 gfcombine_SOURCES = tools/gfcombine.c
 gfcombine_LDADD = libgfshare.la
 
+# Manual pages are useful for teaching people how to do stuff
+
+dist_man_MANS = man/gfshare.7 man/gfsplit.1 man/gfcombine.1 man/libgfshare.5
+
 # Ensure our tests get run...
 C_TESTS = test_gfshare_blockwise_simple
 TESTS = $(C_TESTS) tests/test_gfsplit_gfcombine.sh

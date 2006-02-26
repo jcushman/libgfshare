@@ -28,7 +28,14 @@ COMPILER_WARNINGS
 COMPILER_OPTIMISATIONS
 
 
-AC_CONFIG_FILES([Makefile libgfshare.pc])
+AC_CONFIG_FILES([
+Makefile
+libgfshare.pc
+man/gfsplit.1
+man/gfcombine.1
+man/gfshare.7
+man/libgfshare.5
+])
 
 AC_CONFIG_HEADERS([config.h])
 
