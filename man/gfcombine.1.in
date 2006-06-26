@@ -1,4 +1,4 @@
-.\" This is the makefile for gfsplit
+.\" This is the man page for gfcombine
 .TH GFCOMBINE "1" "February 2006" "@PACKAGE_VERSION@" "UserCommands"
 .SH NAME
 gfcombine \- combine a number of shares to form the original file

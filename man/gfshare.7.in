@@ -1,4 +1,4 @@
-.\" This is the makefile for gfsplit
+.\" This is the man page for gfshare
 .TH GFSHARE "7" "February 2006" "@PACKAGE_VERSION@" "Shamir Secret Sharing in gf(2**8)"
 .SH NAME
 gfshare - explanation of Shamir Secret Sharing in gf(2**8)
@@ -48,7 +48,7 @@ have the values 12, 15 and 18. No single share gives away any information
 whatsoever about the value of the coefficient A and thus no single share can be
 used to reconstruct the secret.
 .PP
-Now, consider the shares as coordinates (1, 12) (2, 15) and (3, 18) — again, no
+Now, consider the shares as coordinates (1, 12) (2, 15) and (3, 18) - again, no
 single share is of any use, but any two of the shares uniquely define a line in
 two-dimensional space. Let us consider the use of the second and third shares.
 They give us the pair of simulaneous equations: \fB15 = 2M + S\fR and
