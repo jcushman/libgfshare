@@ -1,5 +1,5 @@
-.\" This is the makefile for gfsplit
-.TH LIBGFSHARE "1" "February 2006" "@PACKAGE_VERSION@" "Shamir Secret Sharing in gf(2**8)"
+.\" This is the man page for libgfshare
+.TH LIBGFSHARE "5" "February 2006" "@PACKAGE_VERSION@" "Shamir Secret Sharing in gf(2**8)"
 .SH NAME
 gfshare_ctx_init_enc, etc. \- Shamir Secret Sharing
 .SH SYNOPSIS
