@@ -2,7 +2,7 @@
 
 set -ex
 
-TOPWD=$(pwd)
+TOPPWD=$(pwd)
 
 cleanup ()
 {
