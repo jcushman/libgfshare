@@ -1,8 +1,18 @@
 #!/bin/sh
 
-set -e
+set -ex
+
+TOPWD=$(pwd)
+
+cleanup ()
+{
+  cd $TOPPWD
+  rm -rf DIST_TREE
+}
 
 bzr diff
+
+trap cleanup 0
 
 bzr export DIST_TREE
 
@@ -16,6 +26,5 @@ make dist
 
 cp libgfshare*.tar.* ..
 
-cd ..
+cd $TOPPWD
 
-rm -rf DIST_TREE
