@@ -22,7 +22,7 @@ autoreconf --install --verbose
 
 ./configure
 
-make dist
+make distcheck
 
 cp libgfshare*.tar.* ..
 
