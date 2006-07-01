@@ -15,7 +15,7 @@ mkdir $TEMPDIR
 cleanup ()
 {
   cd $TOPPWD
-#  rm -rf $TOPTEMPDIR
+  rm -rf $TOPTEMPDIR
 }
 
 bzr diff
