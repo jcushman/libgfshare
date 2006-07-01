@@ -32,7 +32,7 @@ autoreconf --install --verbose
 
 make distcheck
 
-cp libgfshare*.tar.* ..
+cp libgfshare*.tar.* $TOPPWD
 
 cd $TOPPWD
 
