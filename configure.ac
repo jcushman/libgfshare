@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.57)
 AC_INIT(libgfshare, [1.0.2], [dsilvers@digital-scurf.org])
-AC_SUBST(LTLIBVER, 1:0:2)
+AC_SUBST(LTLIBVER, 1:2:0)
 
 AC_CONFIG_MACRO_DIR(m4)
 
