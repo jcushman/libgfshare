@@ -43,10 +43,12 @@ gfcombine_LDADD = libgfshare.la
 man_MANS = man/gfshare.7 man/gfsplit.1 man/gfcombine.1 man/libgfshare.5
 
 # Ensure our tests get run...
-C_TESTS = test_gfshare_blockwise_simple
+C_TESTS = test_gfshare_isfield test_gfshare_blockwise_simple
 TESTS = $(C_TESTS) tests/test_gfsplit_gfcombine.sh
 
 check_PROGRAMS = $(C_TESTS)
+
+test_gfshare_isfield_SOURCES = tests/test_gfshare_isfield.c libgfshare_tables.h
 
 test_gfshare_blockwise_simple_SOURCES = tests/test_gfshare_blockwise_simple.c
 test_gfshare_blockwise_simple_LDADD = libgfshare.la
