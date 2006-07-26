@@ -176,7 +176,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
     case 'm':
       sharecount = strtoul( optarg, &endptr, 10 );
       if( *endptr != 0 || *optarg == 0 || 
-          sharecount < 3 || sharecount > 255 ) {
+          sharecount < 2 || sharecount > 255 ) {
         fprintf( stderr, "%s: Invalid argument to option -n\n", progname );
         usage( stderr );
         return 1;
