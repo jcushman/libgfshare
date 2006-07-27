@@ -9,3 +9,7 @@
 ./ltmain.sh
 ./missing
 ./mkinstalldirs
+doc/theory.aux
+doc/theory.dvi
+doc/theory.log
+doc/theory.ps

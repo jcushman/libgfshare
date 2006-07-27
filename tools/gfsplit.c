@@ -20,6 +20,26 @@
 #define MIN(a,b) ((a)<(b))?(a):(b)
 #endif
 
+static void
+gfsplit_fill_rand( unsigned char *buffer,
+                   unsigned int count )
+{
+  size_t n;
+  FILE *devrandom;
+
+  devrandom = fopen("/dev/urandom", "rb");
+  if (!devrandom) {
+    perror("Unable to read /dev/urandom");
+    abort();
+  }
+  n = fread(buffer, 1, count, devrandom);
+  if (n < count) {
+      perror("Short read from /dev/urandom");
+      abort();
+  }
+  fclose(devrandom);
+}
+
 static char* progname;
 
 void
@@ -132,6 +152,8 @@ main( int argc, char **argv )
   
   progname = argv[0];
   srandom( time(NULL) );
+
+  gfshare_fill_rand = gfsplit_fill_rand;
   
   while( (optnr = getopt(argc, argv, OPTSTRING)) != -1 ) {
     switch( optnr ) {
