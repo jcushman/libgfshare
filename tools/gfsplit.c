@@ -153,7 +153,13 @@ main( int argc, char **argv )
   progname = argv[0];
   srandom( time(NULL) );
 
-  gfshare_fill_rand = gfsplit_fill_rand;
+  if (access("/dev/urandom", R_OK) == 0) {
+    gfshare_fill_rand = gfsplit_fill_rand;
+  } else {
+    fprintf(stderr, "\
+%s: Cannot access /dev/urandom, so using rand() instead (not secure!)\n\
+", progname);
+  }
   
   while( (optnr = getopt(argc, argv, OPTSTRING)) != -1 ) {
     switch( optnr ) {
