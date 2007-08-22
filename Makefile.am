@@ -19,8 +19,8 @@ libgfshare_la_LDFLAGS = -version-info @LTLIBVER@
 include_HEADERS = include/libgfshare.h
 
 $(top_srcdir)/src/libgfshare.c: libgfshare_tables.h
-libgfshare_tables.h: gfshare_maketable
-	./gfshare_maketable > libgfshare_tables.h
+libgfshare_tables.h: gfshare_maketable$(EXEEXT)
+	./gfshare_maketable$(EXEEXT) > libgfshare_tables.h
 
 # And provide for the pkgconfigness
 pkgconfigdir = $(libdir)/pkgconfig
