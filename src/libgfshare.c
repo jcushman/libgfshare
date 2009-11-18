@@ -27,6 +27,7 @@
 #include "libgfshare.h"
 #include "libgfshare_tables.h"
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -65,7 +66,20 @@ gfshare_ctx_init_enc( unsigned char* sharenrs,
                       unsigned char threshold,
                       unsigned int size )
 {
-  gfshare_ctx *ctx = XMALLOC( sizeof(struct _gfshare_ctx) );
+  gfshare_ctx *ctx;
+  unsigned int i;
+
+  for (i = 0; i < sharecount; i++) {
+    if (sharenrs[i] == 0) {
+      /* can't have x[i] = 0 - that would just be a copy of the secret, in
+       * theory (in fact, due to the way we use exp/log for multiplication and
+       * treat log(0) as 0, it ends up as a copy of x[i] = 1) */
+      errno = EINVAL;
+      return NULL;
+    }
+  }
+
+  ctx = XMALLOC( sizeof(struct _gfshare_ctx) );
   ctx->sharecount = sharecount;
   ctx->threshold = threshold;
   ctx->size = size;
