@@ -92,6 +92,9 @@ do_gfsplit( unsigned int sharecount,
   }
   for( i = 0; i < sharecount; ++i ) {
     unsigned char proposed = (random() & 0xff00) >> 8;
+    if( proposed == 0 ) {
+      proposed = 1;
+    }
     SHARENR_TRY_AGAIN:
     for( j = 0; j < i; ++j ) {
       if( sharenrs[j] == proposed ) {
