@@ -103,7 +103,7 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   if (strcmp(outputfilename, "-") == 0)
     outfile = fdopen(STDOUT_FILENO, "w");
   else 
-  	outfile = fopen( outputfilename, "wb" );
+    outfile = fopen( outputfilename, "wb" );
 
   if( outfile == NULL ) {
     perror((strcmp(outputfilename, "-") == 0) ? "standard out" : outputfilename);
