@@ -63,7 +63,8 @@ libgfshare-clean-local:
 libgfshare-clean-local-coverage:
 	rm -f src/*.gcno src/*.gcda src/*.bb src/*.bbg src/*.da
 	rm -f tests/*.gcno tests/*.gcda tests/*.bb tests/*.bbg tests/*.da
+	rm -f tools/*.gcno tools/*.gcda tools/*.bb tools/*.bbg tools/*.da
 
 maintainer-clean-local: libgfshare-maintainer-clean-local
 libgfshare-maintainer-clean-local:
-	rm -f src/*.gcov tests/*.gcov
+	rm -f src/*.gcov tests/*.gcov tools/*.gcov
