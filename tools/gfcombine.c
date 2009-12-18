@@ -52,6 +52,12 @@ bad_filename( char* fname )
   fprintf( stderr, "%s: %s: bad filename\nInput files should be called <name>.NNN\n", progname, fname );
 }
 
+static void
+zero_filename( char* fname )
+{
+  fprintf( stderr, "%s: %s: input files <name>.000 don't work, see README\n", progname, fname );
+}
+
 static int
 check_filenames( char **filenames, int count )
 {
@@ -71,6 +77,12 @@ check_filenames( char **filenames, int count )
         !isdigit(filenames[i][nlen-2]) ||
         !isdigit(filenames[i][nlen-1]) ) {
       bad_filename(filenames[i]);
+      return 1;
+    }
+    if( filenames[i][nlen-3] == '0' &&
+        filenames[i][nlen-2] == '0' &&
+        filenames[i][nlen-1] == '0') {
+      zero_filename(filenames[i]);
       return 1;
     }
   }
