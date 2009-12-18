@@ -18,3 +18,4 @@ autom4te.cache
 config.h.in
 config.sub
 doc/theory.pdf
+*.m4
