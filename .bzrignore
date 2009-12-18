@@ -13,3 +13,8 @@ doc/theory.aux
 doc/theory.dvi
 doc/theory.log
 doc/theory.ps
+aclocal.m4
+autom4te.cache
+config.h.in
+config.sub
+doc/theory.pdf
