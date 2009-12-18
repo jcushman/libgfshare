@@ -100,9 +100,13 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   gfshare_ctx *G;
   unsigned int len1;
   
-  outfile = fopen( outputfilename, "wb" );
+  if (strcmp(outputfilename, "-") == 0)
+    outfile = fdopen(STDOUT_FILENO, "w");
+  else 
+  	outfile = fopen( outputfilename, "wb" );
+
   if( outfile == NULL ) {
-    perror(outputfilename);
+    perror((strcmp(outputfilename, "-") == 0) ? "standard out" : outputfilename);
     return 1;
   }
   for( i = 0; i < filecount; ++i ) {
