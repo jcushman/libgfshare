@@ -27,6 +27,7 @@
 #include "libgfshare.h"
 #include "libgfshare_tables.h"
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -58,6 +59,45 @@ gfshare_rand_func_t gfshare_fill_rand = _gfshare_fill_rand_using_random;
 
 /* ------------------------------------------------------[ Preparation ]---- */
 
+static gfshare_ctx *
+_gfshare_ctx_init_core( unsigned char *sharenrs,
+                        unsigned int sharecount,
+                        unsigned char threshold,
+                        unsigned int size )
+{
+  gfshare_ctx *ctx;
+  
+  ctx = XMALLOC( sizeof(struct _gfshare_ctx) );
+  if( ctx == NULL )
+    return NULL; /* errno should still be set from XMALLOC() */
+  
+  ctx->sharecount = sharecount;
+  ctx->threshold = threshold;
+  ctx->size = size;
+  ctx->sharenrs = XMALLOC( sharecount );
+  
+  if( ctx->sharenrs == NULL ) {
+    int saved_errno = errno;
+    XFREE( ctx );
+    errno = saved_errno;
+    return NULL;
+  }
+  
+  memcpy( ctx->sharenrs, sharenrs, sharecount );
+  ctx->buffersize = threshold * size;
+  ctx->buffer = XMALLOC( ctx->buffersize );
+  
+  if( ctx->buffer == NULL ) {
+    int saved_errno = errno;
+    XFREE( ctx->sharenrs );
+    XFREE( ctx );
+    errno = saved_errno;
+    return NULL;
+  }
+  
+  return ctx;
+}
+
 /* Initialise a gfshare context for producing shares */
 gfshare_ctx *
 gfshare_ctx_init_enc( unsigned char* sharenrs,
@@ -65,15 +105,19 @@ gfshare_ctx_init_enc( unsigned char* sharenrs,
                       unsigned char threshold,
                       unsigned int size )
 {
-  gfshare_ctx *ctx = XMALLOC( sizeof(struct _gfshare_ctx) );
-  ctx->sharecount = sharecount;
-  ctx->threshold = threshold;
-  ctx->size = size;
-  ctx->sharenrs = XMALLOC( sharecount );
-  memcpy( ctx->sharenrs, sharenrs, sharecount );
-  ctx->buffersize = threshold * size;
-  ctx->buffer = XMALLOC( ctx->buffersize );
-  return ctx;
+  unsigned int i;
+
+  for (i = 0; i < sharecount; i++) {
+    if (sharenrs[i] == 0) {
+      /* can't have x[i] = 0 - that would just be a copy of the secret, in
+       * theory (in fact, due to the way we use exp/log for multiplication and
+       * treat log(0) as 0, it ends up as a copy of x[i] = 1) */
+      errno = EINVAL;
+      return NULL;
+    }
+  }
+
+  return _gfshare_ctx_init_core( sharenrs, sharecount, threshold, size );
 }
 
 /* Initialise a gfshare context for recombining shares */
@@ -82,14 +126,11 @@ gfshare_ctx_init_dec( unsigned char* sharenrs,
                       unsigned int sharecount,
                       unsigned int size )
 {
-  gfshare_ctx *ctx = XMALLOC( sizeof(struct _gfshare_ctx) );
-  ctx->sharecount = sharecount;
-  ctx->threshold = 0;
-  ctx->size = size;
-  ctx->sharenrs = XMALLOC( sharecount );
-  memcpy( ctx->sharenrs, sharenrs, sharecount );
-  ctx->buffersize = ctx->size * ctx->sharecount;
-  ctx->buffer = XMALLOC( ctx->buffersize );
+  gfshare_ctx *ctx = _gfshare_ctx_init_core( sharenrs, sharecount, sharecount, size );
+  
+  if( ctx != NULL )
+    ctx->threshold = 0;
+  
   return ctx;
 }
 

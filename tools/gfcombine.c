@@ -52,6 +52,12 @@ bad_filename( char* fname )
   fprintf( stderr, "%s: %s: bad filename\nInput files should be called <name>.NNN\n", progname, fname );
 }
 
+static void
+zero_filename( char* fname )
+{
+  fprintf( stderr, "%s: %s: input files <name>.000 don't work, see README\n", progname, fname );
+}
+
 static int
 check_filenames( char **filenames, int count )
 {
@@ -73,6 +79,12 @@ check_filenames( char **filenames, int count )
       bad_filename(filenames[i]);
       return 1;
     }
+    if( filenames[i][nlen-3] == '0' &&
+        filenames[i][nlen-2] == '0' &&
+        filenames[i][nlen-1] == '0') {
+      zero_filename(filenames[i]);
+      return 1;
+    }
   }
   return 0;
 }
@@ -88,9 +100,18 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   gfshare_ctx *G;
   unsigned int len1;
   
-  outfile = fopen( outputfilename, "wb" );
+  if( inputfiles == NULL || sharenrs == NULL || buffer == NULL ) {
+    perror( "malloc" );
+    return 1;
+  }
+  
+  if (strcmp(outputfilename, "-") == 0)
+    outfile = fdopen(STDOUT_FILENO, "w");
+  else 
+    outfile = fopen( outputfilename, "wb" );
+
   if( outfile == NULL ) {
-    perror(outputfilename);
+    perror((strcmp(outputfilename, "-") == 0) ? "standard out" : outputfilename);
     return 1;
   }
   for( i = 0; i < filecount; ++i ) {

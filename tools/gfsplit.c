@@ -85,6 +85,11 @@ do_gfsplit( unsigned int sharecount,
   unsigned char* buffer = malloc( BUFFER_SIZE );
   gfshare_ctx *G;
   
+  if( sharenrs == NULL || outputfiles == NULL || outputfilenames == NULL || outputfilebuffer == NULL || buffer == NULL ) {
+    perror( "malloc" );
+    return 1;
+  }
+  
   inputfile = fopen( _inputfile, "rb" );
   if( inputfile == NULL ) {
     perror( _inputfile );
@@ -92,6 +97,9 @@ do_gfsplit( unsigned int sharecount,
   }
   for( i = 0; i < sharecount; ++i ) {
     unsigned char proposed = (random() & 0xff00) >> 8;
+    if( proposed == 0 ) {
+      proposed = 1;
+    }
     SHARENR_TRY_AGAIN:
     for( j = 0; j < i; ++j ) {
       if( sharenrs[j] == proposed ) {
