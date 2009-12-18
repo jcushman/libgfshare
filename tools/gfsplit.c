@@ -85,6 +85,11 @@ do_gfsplit( unsigned int sharecount,
   unsigned char* buffer = malloc( BUFFER_SIZE );
   gfshare_ctx *G;
   
+  if( sharenrs == NULL || outputfiles == NULL || outputfilenames == NULL || outputfilebuffer == NULL || buffer == NULL ) {
+    perror( "malloc" );
+    return 1;
+  }
+  
   inputfile = fopen( _inputfile, "rb" );
   if( inputfile == NULL ) {
     perror( _inputfile );

@@ -100,6 +100,11 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   gfshare_ctx *G;
   unsigned int len1;
   
+  if( inputfiles == NULL || sharenrs == NULL || buffer == NULL ) {
+    perror( "malloc" );
+    return 1;
+  }
+  
   if (strcmp(outputfilename, "-") == 0)
     outfile = fdopen(STDOUT_FILENO, "w");
   else 
