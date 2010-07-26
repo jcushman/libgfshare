@@ -191,7 +191,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
       sharecount = strtoul( optarg, &endptr, 10 );
       if( *endptr != 0 || *optarg == 0 || 
           sharecount < 2 || sharecount > 255 ) {
-        fprintf( stderr, "%s: Invalid argument to option -n\n", progname );
+        fprintf( stderr, "%s: Invalid argument to option -m\n", progname );
         usage( stderr );
         return 1;
       }
@@ -200,7 +200,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
       threshold = strtoul( optarg, &endptr, 10 );
       if( *endptr != 0 || *optarg == 0 || 
           threshold < 2 || threshold > sharecount) {
-        fprintf( stderr, "%s: Invalid argument to option -t\n", progname );
+        fprintf( stderr, "%s: Invalid argument to option -n\n", progname );
         usage( stderr );
         return 1;
       }
