@@ -1,11 +1,11 @@
-# Copyright (c) Daniel Silverstone <dsilvers@digital-scurf.org> 2006
+# Copyright Daniel Silverstone <dsilvers@digital-scurf.org> 2006-2011
 
 # ensure our m4 can be found.
 ACLOCAL_AMFLAGS = -I m4
 
 # Ensure the pc.in is included in the dist tar
 EXTRA_DIST = libgfshare.pc.in README COPYRIGHT tests/test_gfsplit_gfcombine.sh
-EXTRA_DIST += doc/theory.tex
+EXTRA_DIST += doc/theory.tex AUTHORS
 
 # Useful maketable binary
 noinst_PROGRAMS = gfshare_maketable
