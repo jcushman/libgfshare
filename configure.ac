@@ -1,9 +1,9 @@
-# Copyright (c) Daniel Silverstone <dsilvers@digital-scurf.org> 2006
+# Copyright (c) Daniel Silverstone <dsilvers@digital-scurf.org> 2006-2011
 
 
 AC_PREREQ(2.57)
-AC_INIT(libgfshare, [1.0.4], [dsilvers@digital-scurf.org])
-AC_SUBST(LTLIBVER, 1:4:0)
+AC_INIT(libgfshare, [1.0.5], [dsilvers@digital-scurf.org])
+AC_SUBST(LTLIBVER, 1:5:0)
 
 AC_CONFIG_MACRO_DIR(m4)
 
