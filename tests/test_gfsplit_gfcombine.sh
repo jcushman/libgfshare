@@ -15,7 +15,7 @@ trap cleanup 0
 cp ../libtool plaintext
 ../gfsplit -n 3 -m 5 plaintext cyphertext
 
-SHARES=$(ls cyphertext.* | wc -l)
+SHARES=$(ls cyphertext.* | wc -l | tr -d ' ')
 
 if [ "$SHARES" != 5 ]; then
   echo "Share count created was not five"
