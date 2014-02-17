@@ -1,5 +1,5 @@
 /*
- * Copyright Daniel Silverstone <dsilvers@digital-scurf.org> 2006
+ * Copyright Daniel Silverstone <dsilvers@digital-scurf.org> 2006-2011
  */
 
 #include "config.h"
@@ -176,7 +176,7 @@ main( int argc, char **argv )
 gfcombine (" PACKAGE_STRING ")\n\
 Written by Daniel Silverstone.\n\
 \n\
-Copyright (C) 2006 Daniel Silverstone <dsilvers@digital-scurf.org>\n\
+Copyright 2006-2011 Daniel Silverstone <dsilvers@digital-scurf.org>\n\
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 " );
