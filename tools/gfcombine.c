@@ -98,7 +98,7 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   int i;
   unsigned char *buffer = malloc( BUFFER_SIZE );
   gfshare_ctx *G;
-  unsigned int len1;
+  unsigned int len1 = 0;
   
   if( inputfiles == NULL || sharenrs == NULL || buffer == NULL ) {
     perror( "malloc" );
