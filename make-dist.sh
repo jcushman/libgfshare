@@ -4,27 +4,21 @@ set -ex
 
 TOPPWD=$(pwd)
 
-TOPTEMPDIR=$(mktemp -p $TOPPWD)
-rm $TOPTEMPDIR
-mkdir $TOPTEMPDIR
-
-TEMPDIR=$(mktemp -p $TOPTEMPDIR)
+TEMPDIR=$(mktemp -t tmp.XXXXXXXXXX)
 rm $TEMPDIR
 mkdir $TEMPDIR
 
 cleanup ()
 {
-  cd $TOPPWD
-  rm -rf $TOPTEMPDIR
+  cd "$TOPPWD"
+  rm -rf $TEMPDIR
 }
-
-bzr diff
 
 trap cleanup 0
 
-bzr export $TEMPDIR/DIST_TREE
-
-cd $TEMPDIR/DIST_TREE
+cp -R * $TEMPDIR
+cd $TEMPDIR
+rm -rf .git
 
 autoreconf --install --verbose
 
@@ -32,7 +26,7 @@ autoreconf --install --verbose
 
 make distcheck
 
-cp libgfshare*.tar.* $TOPPWD
+cp libgfshare*.tar.* "$TOPPWD"
 
-cd $TOPPWD
+cd "$TOPPWD"
 
