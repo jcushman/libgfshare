@@ -26,19 +26,26 @@
 #ifndef LIBGFSHARE_H
 #define LIBGFSHARE_H
 
+#include <stdio.h>
 
 typedef struct _gfshare_ctx gfshare_ctx;
 
 typedef void (*gfshare_rand_func_t)(unsigned char*, unsigned int);
 
-/* This will, by default, use random(). It's not very good so you should
- * replace it (perhaps with a function which reads from /dev/urandom).
- * If you can't be bothered, be sure to srandom() before you use any
- * of the gfshare_ctx_enc_* functions
- */
 extern gfshare_rand_func_t gfshare_fill_rand;
 
+void gfshare_fill_rand_using_random(unsigned char* /* buffer */,
+                                    unsigned int /* count */);
+
+void gfshare_fill_rand_using_dev_urandom(unsigned char* /* buffer */,
+                                         unsigned int /* count */);
+
+unsigned int gfshare_file_getlen( FILE* /* f */);
+
 /* ------------------------------------------------------[ Preparation ]---- */
+
+void gfshare_generate_sharenrs(unsigned char* /* sharenrs */,
+                               unsigned int /* sharecount */);
 
 /* Initialise a gfshare context for producing shares */
 gfshare_ctx* gfshare_ctx_init_enc(unsigned char* /* sharenrs */,
@@ -68,6 +75,11 @@ void gfshare_ctx_enc_getshare(gfshare_ctx* /* ctx */,
                               unsigned char /* sharenr */,
                               unsigned char* /* share */);
 
+
+unsigned int gfshare_ctx_enc_stream(gfshare_ctx* /* ctx */,
+                                    FILE* /* inputfile */,
+                                    FILE** /* outputfiles */);
+
 /* ----------------------------------------------------[ Recombination ]---- */
 
 /* Inform a recombination context of a change in share indexes */
@@ -86,6 +98,13 @@ void gfshare_ctx_dec_giveshare(gfshare_ctx* /* ctx */,
  */
 void gfshare_ctx_dec_extract(gfshare_ctx* /* ctx */,
                              unsigned char* /* secretbuf */);
+
+
+/* Decrypt from a set of output file pointers to an input file pointer */
+unsigned int gfshare_ctx_dec_stream(gfshare_ctx* /* ctx */,
+                                    unsigned int /* filecount */,
+                                    FILE** /* inputfiles */,
+                                    FILE* /* outfile */);
 
 #endif /* LIBGFSHARE_H */
 

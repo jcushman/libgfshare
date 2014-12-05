@@ -20,25 +20,7 @@
 #define MIN(a,b) ((a)<(b))?(a):(b)
 #endif
 
-static void
-gfsplit_fill_rand( unsigned char *buffer,
-                   unsigned int count )
-{
-  size_t n;
-  FILE *devrandom;
 
-  devrandom = fopen("/dev/urandom", "rb");
-  if (!devrandom) {
-    perror("Unable to read /dev/urandom");
-    abort();
-  }
-  n = fread(buffer, 1, count, devrandom);
-  if (n < count) {
-      perror("Short read from /dev/urandom");
-      abort();
-  }
-  fclose(devrandom);
-}
 
 static char* progname;
 
@@ -60,16 +42,6 @@ The program automatically adds \".NNN\" to the output stem for each share.\n\
 ", progname, DEFAULT_SHARECOUNT, DEFAULT_THRESHOLD );
 }
 
-static unsigned int
-getlen( FILE* f )
-{
-  unsigned int len;
-  fseek(f, 0, SEEK_END);
-  len = ftell(f);
-  fseek(f, 0, SEEK_SET);
-  return len;
-}
-
 static int
 do_gfsplit( unsigned int sharecount, 
             unsigned int threshold,
@@ -78,14 +50,13 @@ do_gfsplit( unsigned int sharecount,
 {
   FILE *inputfile;
   unsigned char* sharenrs = malloc( sharecount );
-  unsigned int i, j;
+  unsigned int i, result;
   FILE **outputfiles = malloc( sizeof(FILE*) * sharecount );
   char **outputfilenames = malloc( sizeof(char*) * sharecount );
   char* outputfilebuffer = malloc( strlen(_outputstem) + 5 );
-  unsigned char* buffer = malloc( BUFFER_SIZE );
   gfshare_ctx *G;
   
-  if( sharenrs == NULL || outputfiles == NULL || outputfilenames == NULL || outputfilebuffer == NULL || buffer == NULL ) {
+  if( sharenrs == NULL || outputfiles == NULL || outputfilenames == NULL || outputfilebuffer == NULL ) {
     perror( "malloc" );
     return 1;
   }
@@ -95,21 +66,11 @@ do_gfsplit( unsigned int sharecount,
     perror( _inputfile );
     return 1;
   }
+
+  gfshare_generate_sharenrs(sharenrs, sharecount);
+
   for( i = 0; i < sharecount; ++i ) {
-    unsigned char proposed = (random() & 0xff00) >> 8;
-    if( proposed == 0 ) {
-      proposed = 1;
-    }
-    SHARENR_TRY_AGAIN:
-    for( j = 0; j < i; ++j ) {
-      if( sharenrs[j] == proposed ) {
-        proposed++;
-        if( proposed == 0 ) proposed = 1;
-        goto SHARENR_TRY_AGAIN;
-      }
-    }
-    sharenrs[i] = proposed;
-    sprintf( outputfilebuffer, "%s.%03d", _outputstem, proposed );
+    sprintf( outputfilebuffer, "%s.%03d", _outputstem, sharenrs[i] );
     outputfiles[i] = fopen( outputfilebuffer, "wb" );
     if( outputfiles[i] == NULL ) {
       perror(outputfilebuffer);
@@ -119,27 +80,18 @@ do_gfsplit( unsigned int sharecount,
   }
   /* All open, all ready and raring to go... */
   G = gfshare_ctx_init_enc( sharenrs, sharecount, 
-                            threshold, MIN(BUFFER_SIZE, getlen( inputfile )) );
+                            threshold, MIN(BUFFER_SIZE, gfshare_file_getlen( inputfile )) );
   if( !G ) {
     perror("gfshare_ctx_init_enc");
     return 1;
   }
-  while( !feof(inputfile) ) {
-    unsigned int bytes_read = fread( buffer, 1, BUFFER_SIZE, inputfile );
-    if( bytes_read == 0 ) break;
-    gfshare_ctx_enc_setsecret( G, buffer );
-    for( i = 0; i < sharecount; ++i ) {
-      unsigned int bytes_written;
-      gfshare_ctx_enc_getshare( G, i, buffer );
-      bytes_written = fwrite( buffer, 1, bytes_read, outputfiles[i] );
-      if( bytes_read != bytes_written ) {
-        perror(outputfilenames[i]);
-        gfshare_ctx_free( G );
-        return 1;
-      }
-    }
-  }
+
+  result = gfshare_ctx_enc_stream(G, inputfile, outputfiles);
   gfshare_ctx_free( G );
+
+  if( result != 0 )
+    return result;
+
   fclose(inputfile);
   for( i = 0; i < sharecount; ++i ) {
     fclose(outputfiles[i]);
@@ -162,11 +114,11 @@ main( int argc, char **argv )
   srandom( time(NULL) );
 
   if (access("/dev/urandom", R_OK) == 0) {
-    gfshare_fill_rand = gfsplit_fill_rand;
   } else {
     fprintf(stderr, "\
 %s: Cannot access /dev/urandom, so using rand() instead (not secure!)\n\
 ", progname);
+    gfshare_fill_rand = gfshare_fill_rand_using_random;
   }
   
   while( (optnr = getopt(argc, argv, OPTSTRING)) != -1 ) {

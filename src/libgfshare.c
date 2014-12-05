@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define XMALLOC malloc
 #define XFREE free
@@ -43,9 +44,9 @@ struct _gfshare_ctx {
   unsigned int buffersize;
 };
 
-static void
-_gfshare_fill_rand_using_random( unsigned char* buffer,
-                                 unsigned int count )
+void
+gfshare_fill_rand_using_random(unsigned char *buffer,
+        unsigned int count)
 {
   unsigned int i;
   for( i = 0; i < count; ++i )
@@ -55,9 +56,58 @@ _gfshare_fill_rand_using_random( unsigned char* buffer,
                                            */
 }
 
-gfshare_rand_func_t gfshare_fill_rand = _gfshare_fill_rand_using_random;
+void
+gfshare_fill_rand_using_dev_urandom( unsigned char *buffer,
+        unsigned int count )
+{
+  size_t n;
+  FILE *devrandom;
+
+  devrandom = fopen("/dev/urandom", "rb");
+  if (!devrandom) {
+    perror("Unable to read /dev/urandom");
+    abort();
+  }
+  n = fread(buffer, 1, count, devrandom);
+  if (n < count) {
+    perror("Short read from /dev/urandom");
+    abort();
+  }
+  fclose(devrandom);
+}
+
+gfshare_rand_func_t gfshare_fill_rand = gfshare_fill_rand_using_dev_urandom;
+
+unsigned int
+gfshare_file_getlen( FILE* f )
+{
+  unsigned int len;
+  fseek(f, 0, SEEK_END);
+  len = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  return len;
+}
 
 /* ------------------------------------------------------[ Preparation ]---- */
+
+void
+gfshare_generate_sharenrs( unsigned char *sharenrs,
+                           unsigned int sharecount )
+{
+  for (int i = 0; i < sharecount; ++i) {
+    unsigned char proposed = (random() & 0xff00) >> 8;
+    if (proposed == 0) proposed = 1;
+    SHARENR_TRY_AGAIN:
+    for (int j = 0; j < i; ++j) {
+      if (sharenrs[j] == proposed) {
+        proposed++;
+        if (proposed == 0) proposed = 1;
+        goto SHARENR_TRY_AGAIN;
+      }
+    }
+    sharenrs[i] = proposed;
+  }
+}
 
 static gfshare_ctx *
 _gfshare_ctx_init_core( unsigned char *sharenrs,
@@ -185,6 +235,35 @@ gfshare_ctx_enc_getshare( gfshare_ctx* ctx,
   }
 }
 
+/* Encrypt from an input file pointer to output file pointers */
+unsigned int
+gfshare_ctx_enc_stream( gfshare_ctx* ctx,
+                        FILE *inputfile,
+                        FILE **outputfiles)
+{
+  unsigned char* buffer = malloc( ctx->buffersize );
+  if( buffer == NULL ) {
+    perror( "malloc" );
+    return 1;
+  }
+
+  while( !feof(inputfile) ) {
+    unsigned int bytes_read = fread( buffer, 1, ctx->buffersize, inputfile );
+    if( bytes_read == 0 ) break;
+    gfshare_ctx_enc_setsecret( ctx, buffer );
+    for( int i = 0; i < ctx->sharecount; ++i ) {
+      unsigned int bytes_written;
+      gfshare_ctx_enc_getshare( ctx, i, buffer );
+      bytes_written = fwrite( buffer, 1, bytes_read, outputfiles[i] );
+      if( bytes_read != bytes_written ) {
+        fprintf( stderr, "Mismatch during file write to output stream %i.\n", i);
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
 /* ----------------------------------------------------[ Recombination ]---- */
 
 /* Inform a recombination context of a change in share indexes */
@@ -245,3 +324,37 @@ gfshare_ctx_dec_extract( gfshare_ctx* ctx,
   }
 }
 
+/* Decrypt from a set of output file pointers to an input file pointer */
+unsigned int
+gfshare_ctx_dec_stream( gfshare_ctx* ctx,
+                        unsigned int filecount,
+                        FILE **inputfiles,
+                        FILE *outfile)
+{
+  unsigned char* buffer = malloc( ctx->buffersize );
+  if( buffer == NULL ) {
+    perror( "malloc" );
+    return 1;
+  }
+
+  while( !feof(inputfiles[0]) ) {
+    unsigned int bytes_read = fread( buffer, 1, ctx->buffersize, inputfiles[0] );
+    unsigned int bytes_written;
+    gfshare_ctx_dec_giveshare( ctx, 0, buffer );
+    for( int i = 1; i < filecount; ++i ) {
+      unsigned int bytes_read_2 = fread( buffer, 1, ctx->buffersize, inputfiles[i] );
+      if( bytes_read != bytes_read_2 ) {
+        fprintf( stderr, "Mismatch during file read.\n");
+        return 1;
+      }
+      gfshare_ctx_dec_giveshare( ctx, i, buffer );
+    }
+    gfshare_ctx_dec_extract( ctx, buffer );
+    bytes_written = fwrite( buffer, 1, bytes_read, outfile );
+    if( bytes_written != bytes_read ) {
+      fprintf( stderr, "Mismatch during file write.\n");
+      return 1;
+    }
+  }
+  return 0;
+}

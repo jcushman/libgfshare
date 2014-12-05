@@ -36,16 +36,6 @@ number which will be taken to be the share number. I.E. \".NNN\".\n\
 ", progname );
 }
 
-static unsigned int
-getlen( FILE* f )
-{
-  unsigned int len;
-  fseek(f, 0, SEEK_END);
-  len = ftell(f);
-  fseek(f, 0, SEEK_SET);
-  return len;
-}
-
 static void
 bad_filename( char* fname )
 {
@@ -95,12 +85,11 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   FILE *outfile;
   FILE **inputfiles = malloc( sizeof(FILE*) * filecount );
   unsigned char* sharenrs = malloc( filecount );
-  int i;
-  unsigned char *buffer = malloc( BUFFER_SIZE );
+  int i, result;
   gfshare_ctx *G;
   unsigned int len1 = 0;
   
-  if( inputfiles == NULL || sharenrs == NULL || buffer == NULL ) {
+  if( inputfiles == NULL || sharenrs == NULL ) {
     perror( "malloc" );
     return 1;
   }
@@ -122,9 +111,9 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
     }
     sharenrs[i] = strtoul( inputfilenames[i] + strlen(inputfilenames[i]) - 3, 
                            NULL, 10 );
-    if( i == 0 ) len1 = getlen(inputfiles[0]);
+    if( i == 0 ) len1 = gfshare_file_getlen(inputfiles[0]);
     else {
-      if( len1 != getlen(inputfiles[1]) ) {
+      if( len1 != gfshare_file_getlen(inputfiles[1]) ) {
         fprintf( stderr, "%s: File length mismatch between input files.\n", progname );
         return 1;
       }
@@ -132,29 +121,11 @@ do_gfcombine( char *outputfilename, char **inputfilenames, int filecount )
   }
   
   G = gfshare_ctx_init_dec( sharenrs, filecount, BUFFER_SIZE );
-  
-  while( !feof(inputfiles[0]) ) {
-    unsigned int bytes_read = fread( buffer, 1, BUFFER_SIZE, inputfiles[0] );
-    unsigned int bytes_written;
-    gfshare_ctx_dec_giveshare( G, 0, buffer );
-    for( i = 1; i < filecount; ++i ) {
-      unsigned int bytes_read_2 = fread( buffer, 1, BUFFER_SIZE, 
-                                         inputfiles[i] );
-      if( bytes_read != bytes_read_2 ) {
-        fprintf( stderr, "Mismatch during file read.\n");
-        gfshare_ctx_free( G );
-        return 1;
-      }
-      gfshare_ctx_dec_giveshare( G, i, buffer );
-    }
-    gfshare_ctx_dec_extract( G, buffer );
-    bytes_written = fwrite( buffer, 1, bytes_read, outfile );
-    if( bytes_written != bytes_read ) {
-      fprintf( stderr, "Mismatch during file write.\n");
-      gfshare_ctx_free( G );
-      return 1;
-    }
-  }
+  result = gfshare_ctx_dec_stream( G, filecount, inputfiles, outfile );
+  gfshare_ctx_free( G );
+  if( result != 0 )
+    return result;
+
   fclose(outfile);
   for( i = 0; i < filecount; ++i ) fclose(inputfiles[i]);
   return 0;
